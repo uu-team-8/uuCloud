@@ -1,5 +1,16 @@
 # uuCloud
 
+## Install python packages
+```
+pip3 install -r requirements.txt
+```
+
+## Start API
+```
+python3 api.py
+```
+
+
 ## API documentation
 https://api.uu.vojtechpetrasek.com/swagger/
 
