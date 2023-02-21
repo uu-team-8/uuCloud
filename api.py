@@ -12,7 +12,6 @@ from datetime import datetime
 import sys
 
 from flask import Flask, request
-
 from flask_swagger_ui import get_swaggerui_blueprint
 
 app = Flask(__name__)

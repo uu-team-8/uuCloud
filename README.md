@@ -31,4 +31,8 @@ restart api service
 systemctl restart api.service
 ```
 
+## InfluxDB
+https://influx.uu.vojtechpetrasek.com/
+
+### Don't look here
 stealing code: https://github.com/Sean-Bradley/Seans-Python3-Flask-Rest-Boilerplate
