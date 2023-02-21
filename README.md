@@ -32,7 +32,12 @@ systemctl restart api.service
 ```
 
 ## InfluxDB
+> internaly runs on port 8086
 https://influx.uu.vojtechpetrasek.com/
+
+## Grafana
+> internaly runs on port 3000
+https://grafana.uu.vojtechpetrasek.com/
 
 ### Don't look here
 stealing code: https://github.com/Sean-Bradley/Seans-Python3-Flask-Rest-Boilerplate
