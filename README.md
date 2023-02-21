@@ -19,3 +19,5 @@ restart api service
 ```
 systemctl restart api.service
 ```
+
+stealing code: https://github.com/Sean-Bradley/Seans-Python3-Flask-Rest-Boilerplate
