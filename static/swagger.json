@@ -1,0 +1,26 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "description": "python api for requesting and managing data from gateways and dbs",
+      "version": "1.0.0",
+      "title": "uuCloud API",
+      "contact": {
+        "email": "vojtechpetrasek@gmail.com"
+      },
+      "license": {
+        "name": "GPL-3.0",
+        "url": "https://opensource.org/license/gpl-3-0/"
+      },
+      "servers": [
+        {
+          "url": "/"
+        }
+      ],
+      "tags": [
+        {
+          "name": "Book Request",
+          "description": "Example API for requesting and return book requests"
+        }
+      ]
+    }
+  }

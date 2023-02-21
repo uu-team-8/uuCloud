@@ -1,0 +1,13 @@
+[Unit]
+Description=Python API
+After=network.target
+
+[Service]
+Type=simple
+Restart=on-failure
+User=root
+WorkingDirectory=/root/uuCloud
+ExecStart=/usr/bin/python3 /root/uuCloud/api.py
+
+[Install]
+WantedBy=multi-user.target
