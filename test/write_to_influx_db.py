@@ -26,7 +26,7 @@ def main():
     with open("secret_token.txt", "r") as t:
         token = t.readline().rstrip()
         
-    bucket = "d70c4c066310c72e"
+    bucket = "test"
     org = "uu team 8"
     
     client = InfluxDBClient(url="https://influx.uu.vojtechpetrasek.com", token=token, org=org)
