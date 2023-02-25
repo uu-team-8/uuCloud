@@ -10,6 +10,7 @@
 
 from datetime import datetime
 import sys
+import json
 
 from flask import Flask, request
 from flask_swagger_ui import get_swaggerui_blueprint
@@ -56,6 +57,17 @@ def sensor():
     p = Point("my_measurement").tag("location", "Prague").field(raw_data[0], float(raw_data[2]))
     write_api.write(bucket=bucket, record=p)
     print(raw_data)
+    return "ok"
+
+@app.route("/v1/solar", methods=["POST"])
+def solar():
+    data = json.loads(request.json)
+    for i in data:
+        try:
+            p = Point("fve_home").tag("location", "Varnsdorf").field(i, float(data[i][0]))
+            write_api.write(bucket="fve", record=p)
+        except Exception as e:
+            print(e)
     return "ok"
 
 if __name__ == '__main__':
