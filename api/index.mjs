@@ -38,12 +38,12 @@ app.post("/register", async (req, res) => {
     return 
   }
 
-  if (req.body.name == "" || req.body.password == "" || req.body.email == "") {
+  if (req.body.name == "" || req.body.password == "" || req.body.email == "" || req.body.surname == "") {
     console.log("Nejsou vyplněna některá pole")
     return 
   }
 
-  await db.execute(`INSERT INTO user (name, email, password) VALUES (?, ?, ?)`, [req.body.name, req.body.email, hash]);
+  await db.execute(`INSERT INTO user (name, surname, email, password) VALUES (?, ?, ?, ?)`, [req.body.name, req.body.surname, req.body.email, hash]);
   console.log("Uživatel byl úspěšně zaregistrován");
   return res.json(true);
 });
@@ -61,7 +61,7 @@ app.post("/login", async (req, res) => {
     return res.json(false);
   }
 
-  const [rows] = await db.execute("SELECT password, id, name, FROM user WHERE email = ?", [req.body.email]);
+  const [rows] = await db.execute("SELECT password, id, name, surname FROM user WHERE email = ?", [req.body.email]);
   if (!rows || rows.length == 0) {
     console.log("Uživatel nenalezen");
     return res.json(false);
@@ -80,7 +80,7 @@ app.post("/login", async (req, res) => {
   await db.execute("INSERT INTO session (token, ip, user) VALUES (?, ?, ?)", [token, req.ip, user.id]);
 
   console.log("Uživatel přihlášen");
-  return res.json({ token: token, name: user.name, id: user.id });
+  return res.json({ token: token, name: user.name, surname: user.surname, id: user.id });
 });
 
 
