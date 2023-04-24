@@ -35,12 +35,12 @@ app.post("/register", async (req, res) => {
 
   if (!EmailValid) {
     console.log("Email není validní")
-    return 
+    return
   }
 
   if (req.body.name == "" || req.body.password == "" || req.body.email == "") {
     console.log("Nejsou vyplněna některá pole")
-    return 
+    return
   }
 
   await db.execute(`INSERT INTO user (name, email, password) VALUES (?, ?, ?)`, [req.body.name, req.body.email, hash]);
@@ -61,7 +61,8 @@ app.post("/login", async (req, res) => {
     return res.json(false);
   }
 
-  const [rows] = await db.execute("SELECT password, id, name, FROM user WHERE email = ?", [req.body.email]);
+  console.log(req.body.email);
+  const [rows] = await db.execute("SELECT password, id, name, surname FROM user WHERE email = ?", [req.body.email]);
   if (!rows || rows.length == 0) {
     console.log("Uživatel nenalezen");
     return res.json(false);
@@ -80,7 +81,7 @@ app.post("/login", async (req, res) => {
   await db.execute("INSERT INTO session (token, ip, user) VALUES (?, ?, ?)", [token, req.ip, user.id]);
 
   console.log("Uživatel přihlášen");
-  return res.json({ token: token, name: user.name, id: user.id });
+  return res.json({ token: token, name: user.name, surname: user.surname, id: user.id });
 });
 
 
@@ -111,5 +112,5 @@ app.post("/login", async (req, res) => {
 
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
-  });
+  console.log(`Example app listening on port ${port}`);
+});
