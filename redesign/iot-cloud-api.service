@@ -1,0 +1,14 @@
+[Unit]
+Description=IoT Cloud API
+Documentation=https://api.uu.vojtechpetrasek.com/v4/docs
+After=network.target
+
+[Service]
+Type=simple
+User=root
+EnvironmentFile=/root/uuCloud/redesign/.env
+ExecStart=/usr/bin/node /root/uuCloud/redesign/index.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

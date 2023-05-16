@@ -21,8 +21,12 @@ dotenv.config();
 //router
 
 const auth = require("./auth.js");
+const gateways = require("./gateways.js");
+const sensors = require("./sensors.js");
 
 app.use("/v4/", auth);
+app.use("/v4/", gateways);
+app.use("/v4/", sensors);
 
 // Express setings
 const hostname = "0.0.0.0";
