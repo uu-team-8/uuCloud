@@ -1,3 +1,4 @@
 flask
 flask_swagger_ui
 influxdb-client
+pymongo[srv]

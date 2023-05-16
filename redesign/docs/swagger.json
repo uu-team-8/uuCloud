@@ -1,0 +1,213 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "IoT Cloud API",
+    "description": "",
+    "version": "1.0",
+    "license": {
+      "name": "GPL-3.0",
+      "url": "https://opensource.org/license/gpl-3-0/"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.uu.vojtechpetrasek.com/v4"
+    }
+  ],
+  "tags": [
+    {
+      "name": "User Requests",
+      "description": "Example API for requesting and return User Requests"
+    },
+    {
+      "name": "Gateway Requests",
+      "description": "Example API for requesting and return Recipe Requests"
+    },
+    {
+      "name": "Sensor Requests",
+      "description": "Example API for requesting and return Sensor Requests"
+    }
+  ],
+  "produces": ["application/json"],
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": ["User Requests"],
+        "description": "",
+        "summary": "Login user",
+        "produces": ["application/json"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": ""
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "token": {
+                      "type": "string",
+                      "example": ""
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "tags": ["User Requests"],
+        "description": "",
+        "summary": "Create new user",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "tags": ["User Requests"],
+        "description": "",
+        "summary": "Get user by id",
+        "parameters": [],
+        "responses": {}
+      },
+      "put": {
+        "tags": ["User Requests"],
+        "description": "",
+        "summary": "Update user by id",
+        "parameters": [],
+        "responses": {}
+      },
+      "delete": {
+        "tags": ["User Requests"],
+        "description": "",
+        "summary": "Delete user by id",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": ["User Requests"],
+        "description": "Get all users",
+        "summary": "Get all users",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/gateway/{id}": {
+      "post": {
+        "tags": ["Gateway Requests"],
+        "description": "",
+        "summary": "Create new gateway",
+        "parameters": [],
+        "responses": {}
+      },
+      "get": {
+        "tags": ["Gateway Requests"],
+        "description": "",
+        "summary": "Get gateway by id",
+        "parameters": [],
+        "responses": {}
+      },
+      "put": {
+        "tags": ["Gateway Requests"],
+        "description": "",
+        "summary": "Update gateway by id",
+        "parameters": [],
+        "responses": {}
+      },
+      "delete": {
+        "tags": ["Gateway Requests"],
+        "description": "",
+        "summary": "Delete gateway by id",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/gateways": {
+      "get": {
+        "tags": ["Gateway Requests"],
+        "description": "Get all gateways",
+        "summary": "Get all gateways",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/sensor/{id}": {
+      "post": {
+        "tags": ["Sensor Requests"],
+        "description": "",
+        "summary": "Create new sensor",
+        "parameters": [],
+        "responses": {}
+      },
+      "get": {
+        "tags": ["Sensor Requests"],
+        "description": "",
+        "summary": "Get sensor by id",
+        "parameters": [],
+        "responses": {}
+      },
+      "put": {
+        "tags": ["Sensor Requests"],
+        "description": "",
+        "summary": "Update sensor by id",
+        "parameters": [],
+        "responses": {}
+      },
+      "delete": {
+        "tags": ["Sensor Requests"],
+        "description": "",
+        "summary": "Delete sensor by id",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/sensors": {
+      "get": {
+        "tags": ["Sensor Requests"],
+        "description": "Get all sensors",
+        "summary": "Get all sensors",
+        "parameters": [],
+        "responses": {}
+      }
+    }
+  },
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "header"
+    }
+  }
+}
