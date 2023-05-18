@@ -4,7 +4,6 @@ const bcrypt = require("bcrypt");
 const router = express.Router();
 
 const db = require("./db");
-const mongo_uri = process.env.MONGO_URI;
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
 const jwtExpireTime = process.env.JWT_EXPIRE_TIME || "1h";
 

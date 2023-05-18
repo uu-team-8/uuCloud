@@ -61,9 +61,23 @@ async function registerUser(user) {
   });
 }
 
+async function registerGateway(gateway) {
+  const client = new MongoClient(mongo_uri);
+  const database = client.db(mongo_db);
+  const collection = database.collection(mongo_gateways_collection);
+  var res = await collection.insertOne(gateway, (err, res) => {
+    if (err) {
+      return { status: "err" };
+    } else {
+      return { status: "ok" };
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getUser,
   checkNicknameEMail,
   registerUser,
+  registerGateway,
 };
