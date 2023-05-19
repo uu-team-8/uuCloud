@@ -20,32 +20,33 @@ const db = mysql.createPool({
 });
 
 app.post("/register", async (req, res) => {
+  const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  const emailValid = emailRegex.test(req.body.email);
 
-  const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-  const EmailValid = regex.test(req.body.email);
-  const salt = await bcrypt.genSalt(10);
-  const hash = await bcrypt.hash(req.body.password, salt);
+  const [user] = await db.execute("SELECT (id) FROM user WHERE email = ?", [req.body.email]);
+  console.log(user);
 
-  const [rows] = await db.execute("SELECT (id) FROM user WHERE email = ?", [req.body.email]);
-
-  if (rows != "") {
-    console.log("Účet již existuje")
-    return res.json(false);
+  if (user.length) {
+    console.log("Účet s tímto emailem již existuje");
+    return res.json({ success: false, message: "Účet s tímto emailem již existuje" });
   }
 
-  if (!EmailValid) {
-    console.log("Email není validní")
-    return
+  if (!emailValid) {
+    console.log("Email není validní");
+    return res.json({ success: false, message: "Resigtrace se nezdařila" });
   }
 
   if (req.body.name == "" || req.body.password == "" || req.body.email == "" || req.body.surname == "") {
-    console.log("Nejsou vyplněna některá pole")
-    return
+    console.log("Nejsou vyplněna některá pole");
+    return res.json({ success: false, message: "Registrace se nezdařila" });
   }
+
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(req.body.password, salt);
 
   await db.execute(`INSERT INTO user (name, surname, email, password) VALUES (?, ?, ?, ?)`, [req.body.name, req.body.surname, req.body.email, hash]);
   console.log("Uživatel byl úspěšně zaregistrován");
-  return res.json(true);
+  return res.json({ success: true, message: "Registrace proběhla úspěšně" });
 });
 
 function generateSecureToken() {
