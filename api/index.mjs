@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 
 const app = express();
-const port = 3000;
+const PORT = 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -48,8 +48,6 @@ app.post("/register", async (req, res) => {
   return res.json(true);
 });
 
-
-
 function generateSecureToken() {
   const buffer = crypto.randomBytes(120);
   return buffer.toString("hex");
@@ -83,33 +81,6 @@ app.post("/login", async (req, res) => {
   return res.json({ token: token, name: user.name, surname: user.surname, id: user.id });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}`);
 });
