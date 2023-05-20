@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import mysql from "mysql2/promise";
 import bcrypt from "bcrypt";
-import crypto from "crypto";
+import crypto from "crypto-js";
 
 dotenv.config();
 
@@ -19,57 +19,73 @@ const db = mysql.createPool({
     password: "",
     database: "uuMeteoStation"
 });
+// TODO dodělat všechny typy na frontendu a backendu
+
+interface RegisterReq {
+    name: string
+    surname: string
+    email: string
+    password: string
+}
 
 app.post("/register", async (req, res) => {
-    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-    console.log(req.body.email);
-    const emailValid = emailRegex.test(req.body.email);
+    const data: RegisterReq = req.body;
 
-    const [user] = await db.execute("SELECT (id) FROM user WHERE email = ?", [req.body.email]);
-    console.log(user);
-
-    if (!user) {
-        console.log("Účet s tímto emailem již existuje");
-        return res.json({ success: false, message: "Účet s tímto emailem již existuje" });
+    if (data.name == "" || data.password == "" || data.email == "" || data.surname == "") {
+        console.log("Nejsou vyplněna některá pole");
+        return res.json({ success: false, message: "Registrace se nezdařila" });
     }
+
+    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    const emailValid = emailRegex.test(data.email);
 
     if (!emailValid) {
         console.log("Email není validní");
         return res.json({ success: false, message: "Resigtrace se nezdařila" });
     }
 
-    if (req.body.name == "" || req.body.password == "" || req.body.email == "" || req.body.surname == "") {
-        console.log("Nejsou vyplněna některá pole");
-        return res.json({ success: false, message: "Registrace se nezdařila" });
+    const [user] = await db.execute("SELECT (id) FROM user WHERE email = ?", [data.email]);
+
+    if (!user) {
+        console.log("Účet s tímto emailem již existuje");
+        return res.json({ success: false, message: "Účet s tímto emailem již existuje" });
     }
 
     const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(req.body.password, salt);
+    const hash = await bcrypt.hash(data.password, salt);
 
-    await db.execute(`INSERT INTO user (name, surname, email, password) VALUES (?, ?, ?, ?)`, [req.body.name, req.body.surname, req.body.email, hash]);
+    await db.execute(`INSERT INTO user (name, surname, email, password) VALUES (?, ?, ?, ?)`, [data.name, data.surname, data.email, hash]);
     console.log("Uživatel byl úspěšně zaregistrován");
     return res.json({ success: true, message: "Registrace proběhla úspěšně" });
 });
 
+// TODO crypto je depreacted, místo toho použít crypto-js
 function generateSecureToken() {
-    const buffer = crypto.randomBytes(120);
-    return buffer.toString("hex");
+    return "";
+    //const buffer = crypto.randomBytes(120);
+    //return buffer.toString("hex");
+}
+
+interface LoginReq {
+    email: string
+    password: string
 }
 
 app.post("/login", async (req, res) => {
-    if (req.body.password == "" || req.body.email == "") {
+    const data: LoginReq = req.body;
+    if (data.password == "" || data.email == "") {
         console.log("Nejsou vyplněna některá pole");
         return res.json({ success: false, message: "Špatně zadaný email nebo heslo" });
     }
 
-    const [rows] = await db.execute("SELECT password, id, name, surname FROM user WHERE email = ?", [req.body.email]) as mysql.RowDataPacket[];
+    const [rows] = await db.execute("SELECT password, id, name, surname FROM user WHERE email = ?", [data.email]) as mysql.RowDataPacket[];
     if (!rows) {
         console.log("Uživatel nenalezen");
         return res.json({ success: false, message: "Špatně zadaný email nebo heslo" });
     }
 
     const user = rows[0];
-    const validPassword = await bcrypt.compare(req.body.password, user.password);
+    const validPassword = await bcrypt.compare(data.password, user.password);
 
     if (!validPassword) {
         console.log("Chybné heslo");
