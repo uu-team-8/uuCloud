@@ -83,9 +83,12 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/logout", async (req, res) => {
-
   await db.execute("DELETE FROM session WHERE token = ?", [req.body.token]);
   res.json(true)
+});
+
+app.post("/data", async (req, res) => {
+
 });
 
 app.listen(PORT, () => {
