@@ -82,42 +82,12 @@ app.post("/login", async (req, res) => {
   return res.json({ token: token, name: user.name, surname: user.surname, id: user.id });
 });
 
-<<<<<<< Updated upstream
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`);
-=======
 app.post("/logout", async (req, res) => {
 
   await db.execute("DELETE FROM session WHERE token = ?", [req.body.token]);
   res.json(true)
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
->>>>>>> Stashed changes
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}`);
 });
