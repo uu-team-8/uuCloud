@@ -57,21 +57,21 @@ function generateSecureToken() {
 app.post("/login", async (req, res) => {
   if (req.body.password == "" || req.body.email == "") {
     console.log("Nejsou vyplněna některá pole");
-    return res.json(false);
+    return res.json({ success: false, message: "Špatně zadaný email nebo heslo" });
   }
 
   const [rows] = await db.execute("SELECT password, id, name, surname FROM user WHERE email = ?", [req.body.email]);
   if (!rows || rows.length == 0) {
     console.log("Uživatel nenalezen");
-    return res.json(false);
+    return res.json({ success: false, message: "Špatně zadaný email nebo heslo" });
   }
 
   const user = rows[0];
   const validPassword = await bcrypt.compare(req.body.password, user.password);
 
   if (!validPassword) {
-    console.log("Chybné heslo")
-    return res.json(false);
+    console.log("Chybné heslo");
+    return res.json({ success: false, message: "Špatně zadaný email nebo heslo" });
   }
 
   const token = generateSecureToken();
