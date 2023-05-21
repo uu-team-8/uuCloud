@@ -50,7 +50,7 @@ export async function register(req: Request, res: Response) {
 // PŘIHLÁŠENÍ
 
 function generateSecureToken() {
-    return "";
+    return "123";
     //const buffer = crypto.randomBytes(120);
     //return buffer.toString("hex");
 }
