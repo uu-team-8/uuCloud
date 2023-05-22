@@ -32,12 +32,13 @@ export async function register(req: Request, res: Response) {
     let user: RowDataPacket;
     try {
         [user] = await db.execute("SELECT (id) FROM user WHERE email = ?", [data.email]) as RowDataPacket[];
+        console.log(user);
     } catch (e) {
         console.error(e);
         return res.json({ succes: false });
     }
 
-    if (!user) {
+    if (user.length) {
         console.error("Účet s tímto emailem již existuje");
         return res.json({ success: false, message: "Účet s tímto emailem již existuje" });
     }
@@ -123,19 +124,43 @@ export async function login(req: Request, res: Response) {
 
 // ODHLÁŠENÍ
 
-interface LogoutReq {
-    token: string
-}
-
 export async function logout(req: Request, res: Response) {
-    console.log(req.header("Authorization"));
-    const data: LogoutReq = req.body;
-    //await db.execute("DELETE FROM session WHERE token = ?", [data.token]);
-    res.json(true);
+    const session = await getLoggedUserSession(req);
+    if (!session) {
+        console.error("");
+        res.json({ success: false });
+    }
+
+    try {
+        await db.execute("DELETE FROM session WHERE token = ?", [session.token]);
+    } catch (e) {
+        console.error(e);
+        res.json({ success: false });
+    }
+
+    res.json({ success: true, message: "Odhlášení proběhlo úspěšně" });
 }
 
 // ZÍSKANÍ SESSION
 
-function GetLoggedUserSession() {
+async function getLoggedUserSession(req: Request) {
+    const token = req.header("Authorization");
+    if (!token) {
+        return null;
+    }
 
+    const splittedToken = token.split(" ");
+    if (splittedToken[0] != "token") {
+        return null;
+    }
+
+    let session: RowDataPacket;
+    try {
+        [session] = await db.execute("SELECT * FROM session WHERE token = ?", [splittedToken[1]]) as RowDataPacket[];
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+
+    return session[0];
 }
