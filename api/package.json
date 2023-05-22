@@ -17,6 +17,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@influxdata/influxdb-client": "^1.33.2",
     "@types/cors": "^2.8.13",
     "@types/crypto-js": "^4.1.1",
     "bcrypt": "^5.1.0",

@@ -3,7 +3,7 @@ import type { RowDataPacket } from "mysql2";
 
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import db from "../database";
+import { mysqlDB } from "../databases";
 
 // REGISTRACE
 
@@ -31,8 +31,7 @@ export async function register(req: Request, res: Response) {
 
     let user: RowDataPacket;
     try {
-        [user] = await db.execute("SELECT (id) FROM user WHERE email = ?", [data.email]) as RowDataPacket[];
-        console.log(user);
+        [user] = await mysqlDB.execute("SELECT (id) FROM user WHERE email = ?", [data.email]) as RowDataPacket[];
     } catch (e) {
         console.error(e);
         return res.json({ succes: false });
@@ -54,7 +53,7 @@ export async function register(req: Request, res: Response) {
     }
 
     try {
-        await db.execute(`INSERT INTO user (name, email, password) VALUES (?, ?, ?)`, [data.name, data.email, hashedPassword]);
+        await mysqlDB.execute(`INSERT INTO user (name, email, password) VALUES (?, ?, ?)`, [data.name, data.email, hashedPassword]);
     } catch (e) {
         console.error(e);
         return res.json({ success: false });
@@ -85,7 +84,7 @@ export async function login(req: Request, res: Response) {
 
     let rows: RowDataPacket;
     try {
-        [rows] = await db.execute("SELECT password, id, name FROM user WHERE email = ?", [data.email]) as RowDataPacket[];
+        [rows] = await mysqlDB.execute("SELECT password, id, name FROM user WHERE email = ?", [data.email]) as RowDataPacket[];
     } catch (e) {
         console.error(e);
         return res.json({ succes: false });
@@ -112,7 +111,7 @@ export async function login(req: Request, res: Response) {
     const token = generateSecureToken();
 
     try {
-        await db.execute("INSERT INTO session (token, ip, user) VALUES (?, ?, ?)", [token, req.ip, user.id]);
+        await mysqlDB.execute("INSERT INTO session (token, ip, user) VALUES (?, ?, ?)", [token, req.ip, user.id]);
     } catch (e) {
         console.error(e);
         return res.json({ success: false });
@@ -132,7 +131,7 @@ export async function logout(req: Request, res: Response) {
     }
 
     try {
-        await db.execute("DELETE FROM session WHERE token = ?", [session.token]);
+        await mysqlDB.execute("DELETE FROM session WHERE token = ?", [session.token]);
     } catch (e) {
         console.error(e);
         res.json({ success: false });
@@ -156,7 +155,7 @@ async function getLoggedUserSession(req: Request) {
 
     let session: RowDataPacket;
     try {
-        [session] = await db.execute("SELECT * FROM session WHERE token = ?", [splittedToken[1]]) as RowDataPacket[];
+        [session] = await mysqlDB.execute("SELECT * FROM session WHERE token = ?", [splittedToken[1]]) as RowDataPacket[];
     } catch (e) {
         console.error(e);
         return null;
