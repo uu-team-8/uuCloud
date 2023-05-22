@@ -1,4 +1,4 @@
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 
 const mongo_uri = process.env.MONGO_URI;
 const mongo_db = process.env.MONGO_DB;
@@ -62,16 +62,54 @@ async function registerUser(user) {
 }
 
 async function registerGateway(gateway) {
+  console.log("register gateway in db.js");
   const client = new MongoClient(mongo_uri);
   const database = client.db(mongo_db);
   const collection = database.collection(mongo_gateways_collection);
+  console.log("gateway", gateway);
   var res = await collection.insertOne(gateway, (err, res) => {
     if (err) {
+      console.log(err);
       return { status: "err" };
     } else {
+      confirm.log(res, "gateway registered");
       return { status: "ok" };
     }
   });
+}
+
+async function getGatewayByApikey(apikey) {
+  const client = new MongoClient(mongo_uri);
+  const database = client.db(mongo_db);
+  const collection = database.collection(mongo_gateways_collection);
+  const query = { apikey: apikey };
+  var gateway = await collection.find(query).toArray();
+  client.close();
+  return gateway;
+}
+
+async function getGatewayByOwner(owner_id, gtw_id, admin) {
+  const client = new MongoClient(mongo_uri);
+  const database = client.db(mongo_db);
+  const collection = database.collection(mongo_gateways_collection);
+  var gateway = [];
+  try {
+    const query = { _id: new ObjectId(gtw_id) };
+    gateway = await collection.find(query).toArray();
+    if (gateway.length != 0) {
+      console.log("gateway found");
+      if (gateway[0].owner_id != owner_id && !admin) {
+        console.log("forbidden");
+        gateway = "forbidden";
+      } else {
+        console.log("gateway owner or admin", admin);
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+  client.close();
+  return gateway;
 }
 
 module.exports = {
@@ -80,4 +118,6 @@ module.exports = {
   checkNicknameEMail,
   registerUser,
   registerGateway,
+  getGatewayByApikey,
+  getGatewayByOwner,
 };
