@@ -84,7 +84,7 @@ export async function login(req: Request, res: Response) {
 
     let rows: RowDataPacket;
     try {
-        [rows] = await mysqlDB.execute("SELECT password, id, name FROM user WHERE email = ?", [data.email]) as RowDataPacket[];
+        [rows] = await mysqlDB.execute("SELECT password, id, name, surname FROM user WHERE email = ?", [data.email]) as RowDataPacket[];
     } catch (e) {
         console.error(e);
         return res.json({ succes: false });
@@ -104,7 +104,7 @@ export async function login(req: Request, res: Response) {
     }
 
     if (!validPassword) {
-        console.error("Chybné heslo");
+        console.error("Chybné heslo");        
         return res.json({ success: false, message: "Špatně zadaný email nebo heslo" });
     }
 
@@ -118,7 +118,7 @@ export async function login(req: Request, res: Response) {
     }
 
     console.log("Uživatel přihlášen");
-    return res.json({ success: true, user: { id: user.id, token: token, name: user.name } });
+    return res.json({ success: true, user: { id: user.id, token: token, name: user.name, surname: user.surname } });
 }
 
 // ODHLÁŠENÍ
