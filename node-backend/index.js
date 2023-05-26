@@ -16,8 +16,7 @@ const queryApi = new InfluxDB({ url, token }).getQueryApi(org);
 
 /** To avoid SQL injection, use a string literal for the query. */
 const fluxQuery =
-  'from(bucket:"test") |> range(start: 0) |> filter(fn: (r) => r._measurement == "my_measurement") |> filter(fn: (r) => r._field == "temperature") |> last()ls
-  ';
+  'from(bucket:"test") |> range(start: 0) |> filter(fn: (r) => r._measurement == "my_measurement") |> filter(fn: (r) => r._field == "temperature") |> last()';
 
 const myQuery = async () => {
   for await (const { values, tableMeta } of queryApi.iterateRows(fluxQuery)) {

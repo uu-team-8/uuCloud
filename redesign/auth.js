@@ -5,7 +5,7 @@ const router = express.Router();
 
 const db = require("./db");
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
-const jwtExpireTime = process.env.JWT_EXPIRE_TIME || "1h";
+const jwtExpireTime = process.env.JWT_EXPIRE_TIME || "24h";
 
 // LOGIN route
 

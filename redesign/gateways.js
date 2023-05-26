@@ -90,9 +90,10 @@ router.post("/gateway", (req, res) => {
   if (req.headers.apikey) {
     const apikey = req.headers.apikey;
     db.getGatewayByApikey(apikey).then((gateway) => {
-      if (gateway) {
+      if (gateway.length != 0) {
         const gtw_id = String(gateway[0]._id);
         const sensor_data = req.body;
+        console.log(sensor_data);
         influx
           .writeData(gtw_id, sensor_data)
           .then((ret) => res.send({ status: "data written" }));

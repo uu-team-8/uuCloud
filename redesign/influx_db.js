@@ -8,9 +8,13 @@ const influx_bucket = process.env.INFLUXDB_BUCKET;
 async function getGatewayData(gtw_id, gtw_query) {
   const fluxQuery = `from(bucket:"${influx_bucket}") |> range(start: ${
     gtw_query.start
-  } ${
-    gtw_query.stop ? ",stop: " + gtw_query.stop : ""
-  }) |> filter(fn: (r) => r._measurement == "${gtw_id}")`;
+  } ${gtw_query.stop ? ",stop: " + gtw_query.stop : ""}) ${
+    gtw_query.agregation_time
+      ? `|> aggregateWindow(every: ${gtw_query.agregation_time}, fn: max)`
+      : ""
+  }
+  |> filter(fn: (r) => r._measurement == "${gtw_id}")`;
+  console.log("query", fluxQuery);
   const queryApi = new InfluxDB({
     url: influx_url,
     token: influx_token,
