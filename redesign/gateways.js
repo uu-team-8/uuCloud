@@ -46,6 +46,31 @@ router.post("/gateway/register", (req, res) => {
   }
 });
 
+router.get("/gateways", (req, res) => {
+  console.log("get gateways");
+  if (req.headers.authorization) {
+    const token = req.headers.authorization.split(" ")[1];
+    jwt.verify(token, jwtSecretKey, (err, decoded) => {
+      if (err) {
+        console.log(err);
+        res.sendStatus(401);
+      } else {
+        console.log("decoded", decoded);
+        var admin = false;
+        if (decoded.role.includes("admin")) {
+          admin = true;
+        }
+        db.getGateways(decoded._id, admin).then((gateways) => {
+          res.send(gateways);
+        });
+      }
+    });
+  } else {
+    // No Authorization
+    res.sendStatus(401);
+  }
+});
+
 router.put("/gateway/update", (req, res) => {
   console.log("update gateway");
   console.log(req.body);
@@ -75,8 +100,8 @@ router.put("/gateway/update", (req, res) => {
           if (decoded.role.includes("admin")) {
             admin = true;
           }
-          db.updateGateway(gateway, req.body.id, decoded_id, admin).then((ret) =>
-            res.send({ status: "gateway updated" })
+          db.updateGateway(gateway, req.body.id, decoded_id, admin).then(
+            (ret) => res.send({ status: "gateway updated" })
           );
         } else {
           res.sendStatus(401);
@@ -160,21 +185,23 @@ router.post("/gateway/delete/:id", (req, res) => {
         res.sendStatus(401);
       } else {
         console.log("decoded", decoded);
-        var gtw_id = req.body.gtw_id;
+        var gtw_id = req.params.id;
         var admin = false;
         if (decoded.role.includes("admin")) {
           admin = true;
         }
         db.deleteGateway(gtw_id, decoded._id, admin).then((gateway) => {
+          console.log("gateway", gateway);
           if (gateway.length == 0) {
+            console.log("gateway not found");
             res.sendStatus(404);
           } else {
             if (gateway == "forbidden") {
               res.sendStatus(403);
+            } else if (gateway == "not found") {
+              res.sendStatus(404);
             } else {
-              influx.getGatewayData(gtw_id, req.body).then((data) => {
-                res.send(data);
-              });
+              res.send({ status: "gateway deleted" });
             }
           }
         });
@@ -184,6 +211,6 @@ router.post("/gateway/delete/:id", (req, res) => {
     // No Authorization
     res.sendStatus(401);
   }
-})
+});
 
 module.exports = router;
