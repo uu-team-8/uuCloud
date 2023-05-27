@@ -146,4 +146,40 @@ router.post("/gateway/data", (req, res) => {
   }
 });
 
+router.post("/gateway/delete/:id", (req, res) => {
+  console.log("delete gateway");
+  if (req.headers.authorization) {
+    const token = req.headers.authorization.split(" ")[1];
+    jwt.verify(token, jwtSecretKey, (err, decoded) => {
+      if (err) {
+        console.log(err);
+        res.sendStatus(401);
+      } else {
+        console.log("decoded", decoded);
+        var gtw_id = req.body.gtw_id;
+        var admin = false;
+        if (decoded.role.includes("admin")) {
+          admin = true;
+        }
+        db.deleteGateway(gtw_id, decoded._id, admin).then((gateway) => {
+          if (gateway.length == 0) {
+            res.sendStatus(404);
+          } else {
+            if (gateway == "forbidden") {
+              res.sendStatus(403);
+            } else {
+              influx.getGatewayData(gtw_id, req.body).then((data) => {
+                res.send(data);
+              });
+            }
+          }
+        });
+      }
+    });
+  } else {
+    // No Authorization
+    res.sendStatus(401);
+  }
+})
+
 module.exports = router;
