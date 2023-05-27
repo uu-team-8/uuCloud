@@ -31,6 +31,7 @@ router.post("/gateway/register", (req, res) => {
             visibility: req.body.visibility ? "Public" : "Private",
             registered: timeNow.toISOString(),
             owner: decoded.nickname,
+            owner_id: decoded._id,
             status: "active",
             sensors: [],
           };
@@ -59,6 +60,7 @@ router.get("/gateways", (req, res) => {
         var admin = false;
         if (decoded.role.includes("admin")) {
           admin = true;
+          console.log("admin");
         }
         db.getGateways(decoded._id, admin).then((gateways) => {
           res.send(gateways);
@@ -148,8 +150,8 @@ router.post("/gateway/data", (req, res) => {
         console.log(err);
         res.sendStatus(401);
       } else {
-        console.log("decoded", decoded);
         var gtw_id = req.body.gtw_id;
+        console.log("decoded", decoded);
         var admin = false;
         if (decoded.role.includes("admin")) {
           admin = true;
@@ -161,6 +163,9 @@ router.post("/gateway/data", (req, res) => {
             if (gateway == "forbidden") {
               res.sendStatus(403);
             } else {
+              if (gtw_id === "646cb40fad57ce242a491b6d") {
+                gtw_id = "arduino";
+              }
               influx.getGatewayData(gtw_id, req.body).then((data) => {
                 res.send(data);
               });

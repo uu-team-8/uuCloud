@@ -112,6 +112,19 @@ async function getGatewayByOwner(owner_id, gtw_id, admin) {
   return gateway;
 }
 
+async function getGateways(owner_id, admin) {
+  const client = new MongoClient(mongo_uri);
+  const database = client.db(mongo_db);
+  const collection = database.collection(mongo_gateways_collection);
+  const query = {};
+  var gateways = await collection.find(query).toArray();
+  if (!admin) {
+    gateways = gateways.filter((gateway) => gateway.owner_id == owner_id);
+  }
+  client.close();
+  return gateways;
+}
+
 async function updateGateway(data, gtw_id, owner_id, admin) {
   const client = new MongoClient(mongo_uri);
   const database = client.db(mongo_db);
@@ -176,5 +189,6 @@ module.exports = {
   registerGateway,
   getGatewayByApikey,
   getGatewayByOwner,
+  getGateways,
   deleteGateway,
 };
