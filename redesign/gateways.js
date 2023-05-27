@@ -71,7 +71,11 @@ router.put("/gateway/update", (req, res) => {
             status: "active",
             sensors: [],
           };
-          db.updateGateway(gateway).then((ret) =>
+          var admin = false;
+          if (decoded.role.includes("admin")) {
+            admin = true;
+          }
+          db.updateGateway(gateway, req.body.id, decoded_id, admin).then((ret) =>
             res.send({ status: "gateway updated" })
           );
         } else {
@@ -182,7 +186,4 @@ router.post("/gateway/delete/:id", (req, res) => {
   }
 })
 
-router.get("/vojta", (req, res) => {
-  res.send("dwiauzgawdizg")
-})
 module.exports = router;

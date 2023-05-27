@@ -112,8 +112,29 @@ async function getGatewayByOwner(owner_id, gtw_id, admin) {
   return gateway;
 }
 
-async function editGateway(owner_id, gtw_id, data) {
-
+async function updateGateway(data, gtw_id, owner_id, admin) {
+  const client = new MongoClient(mongo_uri);
+  const database = client.db(mongo_db);
+  const collection = database.collection(mongo_gateways_collection);
+  var gateway = [];
+  try {
+    const query = { _id: new ObjectId(gtw_id) };
+    gateway = await collection.find(query).toArray();
+    if (gateway.length != 0) {
+      console.log("gateway found");
+      if (gateway[0].owner_id != owner_id && !admin) {
+        console.log("forbidden");
+        gateway = "forbidden";
+      } else {
+        console.log("gateway owner or admin", admin);
+        await collection.updateOne({ id: gtw_id }, data);
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+  client.close();
+  return;
 }
 
 async function deleteGateway(gtw_id, owner_id, admin) {
