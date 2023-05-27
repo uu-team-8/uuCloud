@@ -182,4 +182,7 @@ router.post("/gateway/delete/:id", (req, res) => {
   }
 })
 
+router.get("/vojta", (req, res) => {
+  res.send("dwiauzgawdizg")
+})
 module.exports = router;

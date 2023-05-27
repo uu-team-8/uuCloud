@@ -30,7 +30,7 @@ app.use("/v4/", sensors);
 
 // Express setings
 const hostname = "0.0.0.0";
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 
 var server = app.listen(port, hostname, function () {
   var host = server.address().address;
